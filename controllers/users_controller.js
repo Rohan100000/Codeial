@@ -1,3 +1,7 @@
+/* ********************** Manual Authentication ************************** */
+
+
+
 const User = require("../models/user");
 
 module.exports.profile = function (request, response) {
