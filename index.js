@@ -9,6 +9,7 @@ const db = require("./config/mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocal = require("passport-local").Strategy;
+require('./config/passport-local-strategy');
 
 // app.use(express);
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -21,14 +22,11 @@ app.use(expressLayouts);
 app.set("layout extractStyles", true);
 app.set("layout extractScripts", true);
 
-// use express router.
-app.use("/", require("./routes/index.js"));
-
 // set up the view engine.
 app.set("view engine", "ejs");
 app.set("views", "./views");
 
-// Using middleware to create the session usin passport.js
+// Using middleware to create the session using passport.js
 app.use(
   session({
     name: "codeial",
@@ -44,6 +42,11 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(passport.setAuthenticatedUser);
+
+// use express router.
+app.use("/", require("./routes/index.js"));
 
 app.listen(port, function (error) {
   if (error) {
