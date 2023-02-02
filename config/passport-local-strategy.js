@@ -1,7 +1,6 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("../models/user");
-const { response } = require("express");
 
 // authentication using passport
 passport.use(
@@ -46,7 +45,7 @@ passport.deserializeUser(function (id, done) {
 });
 
 // Check if the user is authenticated
-passport.checkAuthentication = function (request, request, next) {
+passport.checkAuthentication = function (request, response, next) {
   // if the user is signed in, then pass on the request to the next function(controller's action)
   if (request.isAuthenticated()) {
     return next();

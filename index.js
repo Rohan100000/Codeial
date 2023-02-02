@@ -8,8 +8,9 @@ const db = require("./config/mongoose");
 // Used for session cookie.
 const session = require("express-session");
 const passport = require("passport");
+const passportConfig = require("./config/passport-local-strategy");
 const passportLocal = require("passport-local").Strategy;
-require('./config/passport-local-strategy');
+const MongoStore = require("connect-mongo");
 
 // app.use(express);
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -27,6 +28,7 @@ app.set("view engine", "ejs");
 app.set("views", "./views");
 
 // Using middleware to create the session using passport.js
+// Mongo Store is used to store the session cookie in the db
 app.use(
   session({
     name: "codeial",
@@ -37,6 +39,14 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 100,
     },
+    store: MongoStore.create({
+      mongooseConnection: db,
+      autoRemove: "disabled",
+      // Added next line from stackoverflow to remove the (session) parameter from line 13
+      mongoUrl: 'mongodb://localhost/codeial_development'
+    }),function(error){
+      console.log(error || 'connect-mongodb setup okay');
+    }
   })
 );
 
