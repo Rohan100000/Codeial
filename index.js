@@ -11,6 +11,20 @@ const passport = require("passport");
 const passportConfig = require("./config/passport-local-strategy");
 const passportLocal = require("passport-local").Strategy;
 const MongoStore = require("connect-mongo");
+const sassMiddleware = require("node-sass-middleware");
+const flash = require("connect-flash");
+const customMware = require("./config/middleware");
+
+// using the sass middleware
+app.use(
+  sassMiddleware({
+    src: "./assets/scss",
+    dest: "./assets/css",
+    debug: true,
+    outputStyle: "extended",  
+    prefix: "/css",
+  })
+);
 
 // app.use(express);
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -43,10 +57,11 @@ app.use(
       mongooseConnection: db,
       autoRemove: "disabled",
       // Added next line from stackoverflow to remove the (session) parameter from line 13
-      mongoUrl: 'mongodb://localhost/codeial_development'
-    }),function(error){
-      console.log(error || 'connect-mongodb setup okay');
-    }
+      mongoUrl: "mongodb://localhost/codeial_development",
+    }),
+    function(error) {
+      console.log(error || "connect-mongodb setup okay");
+    },
   })
 );
 
@@ -54,6 +69,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(passport.setAuthenticatedUser);
+
+app.use(flash());
+app.use(customMware.setFlash);
 
 // use express router.
 app.use("/", require("./routes/index.js"));
