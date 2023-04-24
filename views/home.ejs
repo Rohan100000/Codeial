@@ -29,5 +29,23 @@
     </p>
     <% } %>
   </section>
+  <%- include('_chat_box') %>
 </div>
+
+<script src="/js/home_post_comments.js"></script>
 <script src="/js/home_posts.js"></script>
+
+<script src="/js/toggle_likes.js"></script>
+<script>
+  $(".toggle-like-button").each(function(){
+    let self = this;
+    let toggleLike = new ToggleLike(self);
+  })
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/js/chat_engine.js"></script>
+<% if(locals.user){ %>
+<script>
+  new ChatEngine("user-chat-box","<%= locals.user.email %>");
+</script>
+<% } %>
