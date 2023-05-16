@@ -60,11 +60,11 @@
 
     // method to delete a post from DOM
     let deletePost = function(deleteLink){
-        ${deleteLink}.click(function(event){
+        deleteLink.click(function(event){
             event.preventDefault();
             $.ajax({
                 type: "get",
-                url: ${deleteLink}.prop("href"),
+                url: deleteLink.prop("href"),
                 success: function(data){
                     $(`#post-${data.data.post_id}`).remove();
                 },

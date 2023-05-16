@@ -1,7 +1,10 @@
 const express = require("express");
+const env = require("./config/environment");
+const logger = require("morgan");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const app = express();
+require("./config/view-helpers")(app);
 const port = 8000;
 const expressLayouts = require("express-ejs-layouts");
 const db = require("./config/mongoose");
@@ -23,24 +26,31 @@ const chatSockets = require("./config/chat_sockets").chatSockets(chatServer);
 chatServer.listen(5000);
 console.log("chat server is listening on port 5000");
 
-// using the sass middleware
-app.use(
-  sassMiddleware({
-    src: "./assets/scss",
-    dest: "./assets/css",
-    debug: true,
-    outputStyle: "extended",  
-    prefix: "/css",
-  })
-);
+const path = require("path");
+
+if(env.name == "development"){
+  // using the sass middleware
+  app.use(
+    sassMiddleware({
+      src: path.join(__dirname, env.asset_path, "/scss"),
+      dest: path.join(__dirname, env.asset_path, "/css"),
+      debug: true,
+      outputStyle: "extended",
+      prefix: "/css",
+    })
+  );
+
+}
 
 // app.use(express);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static("./assets"));
+app.use(express.static(__dirname + env.asset_path));
 
 // make the uploads path available to the browser
-app.use("/uploads",express.static(__dirname + "/uploads"));
+app.use("/uploads", express.static(__dirname + "/uploads"));
+
+app.use(logger(env.morgan.mode, env.morgan.options));
 
 app.use(expressLayouts);
 
@@ -58,7 +68,7 @@ app.use(
   session({
     name: "codeial",
     // TODO change the secret before deployment in production mode
-    secret: "blasomething",
+    secret: env.session_cookie_key,
     saveUninitialized: false,
     resave: false,
     cookie: {
