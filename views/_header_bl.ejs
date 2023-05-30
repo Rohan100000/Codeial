@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded">
+
+<nav>
+  <div class="container">
+    <h2 class="logo">
+      Harmony
+    </h2>
+    <div class="search-bar">
+      <span class="material-symbols-rounded">
+        search
+      </span>
+      <input type="search" placeholder="Search">
+    </div>
+    <div class="create">
+      <label class="btn btn-primary" for="create-post">Create</label>
+      <div class="account-connect">
+        <ul>
+          <% if(locals.user){ %>
+            <li><a href="/users/profile/<%= user.id %>">
+                <%= user.name %>
+              </a></li>
+            <a href="/users/sign-out">Sign Out</a>
+            <% }else{ %>
+              <li>
+                <a href="/users/sign-in">Sign In</a>
+              </li>
+              <li>
+                <a href="/users/sign-up">Sign Up</a>
+              </li>
+              <% } %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
